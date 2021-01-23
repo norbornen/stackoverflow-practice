@@ -17,6 +17,7 @@
     "no-console": "off",
     "no-multiple-empty-lines": "off",
     "no-use-before-define": "warn",
-    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }]
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "padded-blocks": "off"
   }
 }

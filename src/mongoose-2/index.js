@@ -9,24 +9,24 @@ const { AdModel, Reference } = require('./model');
       { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }
     );
 
-    // AdModel.collection.drop();
+    AdModel.collection.drop();
 
-    // let count = 1000;
-    // while (--count >= 0) {
-    //   await AdModel.create({
-    //     productPrice: randomNumber(1000000),
-    //     backendDate: randomDate(),
-    //     status: Reference.Status[randomNumber(Reference.Status.length)],
-    //     city: Reference.Cities[randomNumber(Reference.Cities.length)],
-    //     category: Reference.Categories[randomNumber(Reference.Categories.length)],
-    //     section: Reference.Sections[randomNumber(Reference.Sections.length)],
-    //     subsection: Reference.Subsections[randomNumber(Reference.Subsections.length)],
-    //   });
-    // }
+    let count = 1000;
+    while (--count >= 0) {
+      await AdModel.create({
+        productPrice: randomNumber(1000000),
+        backendDate: randomDate(),
+        status: Reference.Status[randomNumber(Reference.Status.length)],
+        city: Reference.Cities[randomNumber(Reference.Cities.length)],
+        category: Reference.Categories[randomNumber(Reference.Categories.length)],
+        section: Reference.Sections[randomNumber(Reference.Sections.length)],
+        subsection: Reference.Subsections[randomNumber(Reference.Subsections.length)],
+      });
+    }
 
     const reqQuery = {
-      city: Reference.Cities[0],//[randomNumber(Reference.Cities.length)],
-      subsection: Reference.Subsections[0],//[randomNumber(Reference.Subsections.length)],
+      city: Reference.Cities[0], // [randomNumber(Reference.Cities.length)],
+      subsection: Reference.Subsections[0], // [randomNumber(Reference.Subsections.length)],
       price: 'high',
       date: 'high',
     };
