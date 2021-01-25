@@ -4,7 +4,7 @@ const readline = require('readline');
 (async () => {
   const limit = 2;
   const arr = [];
-  while(1) {
+  while (1) {
     try {
       const str = await ask(`Введите число #${1 + arr.length}: `);
       const number = +str;
@@ -17,7 +17,7 @@ const readline = require('readline');
     } catch (err) {}
   }
 
-  const sum = arr.reduce((acc, x) => acc += x, 0);
+  const sum = arr.reduce((acc, x) => acc + x, 0);
   console.log(sum);
 })();
 
