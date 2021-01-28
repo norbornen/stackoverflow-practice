@@ -10,7 +10,7 @@ db.serialize(() => {
 
   const keys = [];
   const stmt = db.prepare('INSERT INTO lorem VALUES (?)');
-  for (let i = 0; i < 51 * 100 * 1000; i += 1) {
+  for (let i = 0; i < 51 * 1000 * 1000; i += 1) {
     const x = crypto.randomBytes(10).toString('base64');
     stmt.run(x);
 
