@@ -1,8 +1,11 @@
 // @ts-check
 const crypto = require('crypto');
+const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 
-const db = new sqlite3.Database(':memory:');
+console.log(__dirname, process.cwd());
+// const db = new sqlite3.Database(':memory:');
+const db = new sqlite3.Database(path.join(__dirname, 'xx.db'));
 
 db.serialize(() => {
   db.run('CREATE TABLE lorem (info TEXT)');
