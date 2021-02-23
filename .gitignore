@@ -1,4 +1,6 @@
 .DS_Store
+src/sendfilessecurely/*png
+src/stream-big-data-1/generator/data*
 
 # Logs
 logs
