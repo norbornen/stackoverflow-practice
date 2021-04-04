@@ -1,8 +1,11 @@
+/* eslint-disable prefer-destructuring */
 // @ts-check
 const puppeteer = require('puppeteer');
 const path = require('path');
 const chokidar = require('chokidar');
+const { Iconv } = require('iconv');
 const contentDisposition = require('content-disposition');
+const contentDispositionAttachment = require('content-disposition-attachment');
 
 (async () => {
   const downloadPath = __dirname;
@@ -13,7 +16,7 @@ const contentDisposition = require('content-disposition');
   const page = await browser.newPage();
 
   await page.goto(
-    'https://www.SendFilesSecurely.com/getfile.aspx?id=VBcvIgGdkctZei52MSunaZl58DjOUNNZNAVf',
+    'https://www.SendFilesSecurely.com/getfile.aspx?id=mV4Ud29sfVJJIkwMFWHPL4LwiPIHG5NQxegc',
     {
       waitUntil: 'domcontentloaded'
     }
@@ -35,9 +38,47 @@ const contentDisposition = require('content-disposition');
       return;
     }
 
+    console.log(response.headers());
     console.log(hContentDisposition);
-    const x = contentDisposition.parse(hContentDisposition);
-    console.log(hostname, x);
+
+    try {
+      const buf = Buffer.from(hContentDisposition, 'binary');
+      const iconv = new Iconv('ISO-8859-1', 'UTF-8');
+      // const iconv = new (require('iconv'))('UTF-8', 'b');
+      console.log(iconv.convert(buf).toString('utf-8'));
+    } catch (err) {
+      console.error(err);
+    }
+
+    try {
+      const iconv = new Iconv('UTF-8', 'ISO-8859-1');
+      const x = iconv.convert(hContentDisposition);
+      console.log('u-iso', x.toString('utf-8'));
+    } catch (err) {
+      console.error(err);
+    }
+
+    try {
+      const iconv = new Iconv('ISO-8859-1', 'UTF-8');
+      const x = iconv.convert(hContentDisposition);
+      console.log('iso-u', x.toString('utf-8'));
+    } catch (err) {
+      console.error(err);
+    }
+
+    try {
+      const x = contentDisposition.parse(hContentDisposition);
+      console.log(1, hostname, x);
+    } catch (err) {
+      console.error(err);
+    }
+    try {
+      const x = contentDispositionAttachment.parse(hContentDisposition);
+      console.log(2, hostname, x);
+    } catch (err) {
+      console.error(err);
+    }
+
     // let m = [];
     // if (m && m.length > 0 && hContentLength > 0) {
     //   const filename = m[1];

@@ -6,7 +6,8 @@ const readline = require('readline');
 const sqlite3 = require('sqlite3').verbose();
 
 const databasefile = path.join(__dirname, 'sqlite.db');
-const db = new sqlite3.Database(':memory:');
+const db = new sqlite3.Database(databasefile);
+// const db = new sqlite3.Database(':memory:');
 
 db.serialize(async () => {
   await initDatabase();
@@ -20,20 +21,20 @@ db.serialize(async () => {
   await new Promise((resolve) => db.close(resolve));
 
   try {
-    fs.unlinkSync(databasefile);
-  } catch (err) {}
+    // fs.unlinkSync(databasefile);
+  } catch (err) { /**/ }
 });
 
 /**
  * @returns {Promise<void>}
  */
 async function initDatabase() {
-  // await new Promise((resolve, reject) =>
-  //   db.run('pragma synchronous = off;', (err, ...args) => (err ? reject(err) : resolve(...args))));
+  await new Promise((resolve, reject) =>
+    db.run('pragma synchronous = off;', (err, ...args) => (err ? reject(err) : resolve(...args))));
   await new Promise((resolve, reject) =>
     db.run('pragma journal_mode = MEMORY;', (err, ...args) => (err ? reject(err) : resolve(...args))));
-  // await new Promise((resolve, reject) =>
-  //   db.run('pragma auto_vacuum = NONE;', (err, ...args) => (err ? reject(err) : resolve(...args))));
+  await new Promise((resolve, reject) =>
+    db.run('pragma auto_vacuum = NONE;', (err, ...args) => (err ? reject(err) : resolve(...args))));
 
   await new Promise((resolve, reject) =>
     db.run('DROP TABLE IF EXISTS pairs', (err, ...args) => (err ? reject(err) : resolve(...args))));
@@ -72,16 +73,11 @@ async function handleFile(filepath) {
   for await (const line of rl) {
     if (line !== undefined && line !== null) {
       result.lines++;
-      try {
-        await handleLine(line);
-        result.uniq_pairs++;
-      } catch (err) {
-        if (err && err.code === 'SQLITE_CONSTRAINT') {
-          result.doubles++;
-        } else {
-          console.error(err);
-        }
-      }
+
+      const pair = await handleLine(line);
+
+      if (pair) result.uniq_pairs++;
+      if (pair === null) result.doubles++;
     }
     if (result.lines % 1000000 === 0) {
       console.log(result);
@@ -100,27 +96,42 @@ async function handleFile(filepath) {
 }
 
 /**
+ * @param {string} line
+ * @returns {Promise<{ key: string; value: string; } | null>}
+ */
+async function handleLine(line) {
+  const [key, value] = line.replace(/^\s+|\s+$/g, '').split(/: /);
+
+  try {
+    await validatePair(key, value);
+    return { key, value };
+  } catch (err) {
+    if (err && err.code === 'SQLITE_CONSTRAINT') {
+      return null;
+    }
+    console.error(err);
+  }
+}
+
+/**
  * @type { import('sqlite3').Statement }
  */
 let pairInsertStatement;
 
 /**
- * @param {string} line
- * @returns {Promise<{ key: string; value: string; }>}
+ * @param {string} key
+ * @param {string} value
+ * @returns {Promise<void>}
  */
-async function handleLine(line) {
-  const [key, value] = line.replace(/^\s+|\s+$/g, '').split(/: /);
-
+async function validatePair(key, value) {
   if (!pairInsertStatement) {
     pairInsertStatement = db.prepare('INSERT INTO pairs (key, value) values (?, ?)');
   }
 
-  await new Promise((resolve, reject) => pairInsertStatement.run(
+  return new Promise((resolve, reject) => pairInsertStatement.run(
     [key, value],
     (err, ...args) => (err ? reject(err) : resolve(...args))
   ));
-
-  return { key, value };
 }
 
 /**
