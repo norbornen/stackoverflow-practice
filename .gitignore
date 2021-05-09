@@ -1,6 +1,5 @@
 .DS_Store
-src/sendfilessecurely/*png
-src/stream-big-data-1/generator/data*
+
 
 # Logs
 logs
@@ -69,5 +68,8 @@ typings/
 # TernJS port file
 .tern-port
 
-src/ssh-postgresql
+src/stream-big-data-1/generator/data*
+src/**/*.png
 src/**/*.jpg
+src/**/*.ttf
+src/**/*.db
