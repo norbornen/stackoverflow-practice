@@ -4,6 +4,7 @@
         "target": "esnext",
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true,
         "moduleResolution": "node",
         "sourceMap": true,
         "declaration": true,
