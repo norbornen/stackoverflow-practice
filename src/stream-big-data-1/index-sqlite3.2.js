@@ -5,15 +5,42 @@ const path = require('path');
 const readline = require('readline');
 const sqlite3 = require('sqlite3').verbose();
 
-const databasefile = path.join(__dirname, 'sqlite.db');
-const db = new sqlite3.Database(databasefile);
-// const db = new sqlite3.Database(':memory:');
+const db = new sqlite3.Database(':memory:');
 
-db.serialize(async () => {
-  await initDatabase();
+/** @type { import('sqlite3').Statement } */
+let stmtPairInsert;
+/** @type { import('sqlite3').Statement } */
+let stmtPairSelect;
+
+
+db.parallelize(async () => {
+
+  await new Promise((resolve, reject) =>
+    db.run('pragma synchronous = off', (err, ...args) => (err ? reject(err) : resolve(...args))));
+  await new Promise((resolve, reject) =>
+    db.run('pragma journal_mode = off', (err, ...args) => (err ? reject(err) : resolve(...args))));
+  await new Promise((resolve, reject) =>
+    db.run('pragma auto_vacuum = NONE', (err, ...args) => (err ? reject(err) : resolve(...args))));
+  await new Promise((resolve, reject) =>
+    db.run('pragma page_size = 8192', (err, ...args) => (err ? reject(err) : resolve(...args))));
+  await new Promise((resolve, reject) =>
+    db.run('pragma cache_size = 10000', (err, ...args) => (err ? reject(err) : resolve(...args))));
+  await new Promise((resolve, reject) =>
+    db.run('CREATE TABLE pairs (key TEXT, value TEXT)', (err, ...args) => (err ? reject(err) : resolve(...args))));
+  await new Promise((resolve, reject) =>
+    db.run('create unique index idx_pair_uniq on pairs (key, value)', (err, ...args) => (err ? reject(err) : resolve(...args))));
+
+  stmtPairInsert = db.prepare('INSERT INTO pairs (key, value) values (?, ?)');
+  stmtPairSelect = db.prepare('select 1 as n from pairs where key = ? and value = ? limit 1');
+
+  await new Promise((resolve, reject) =>
+    db.exec('BEGIN TRANSACTION', (err, ...args) => (err ? reject(err) : resolve(...args))));
 
   const filepath = path.join(__dirname, 'generator', 'data.txt');
   const res = await handleFile(filepath);
+
+  await new Promise((resolve, reject) =>
+    db.exec('END TRANSACTION', (err, ...args) => (err ? reject(err) : resolve(...args))));
 
   console.log(JSON.stringify(res, null, 2));
   console.log(`Время выполнения скрипта: ${formatDate(res.time)}`);
@@ -25,26 +52,6 @@ db.serialize(async () => {
   } catch (err) { /**/ }
 });
 
-/**
- * @returns {Promise<void>}
- */
-async function initDatabase() {
-  await new Promise((resolve, reject) =>
-    db.run('pragma synchronous = off;', (err, ...args) => (err ? reject(err) : resolve(...args))));
-  await new Promise((resolve, reject) =>
-    db.run('pragma journal_mode = MEMORY;', (err, ...args) => (err ? reject(err) : resolve(...args))));
-  await new Promise((resolve, reject) =>
-    db.run('pragma auto_vacuum = NONE;', (err, ...args) => (err ? reject(err) : resolve(...args))));
-
-  await new Promise((resolve, reject) =>
-    db.run('DROP TABLE IF EXISTS pairs', (err, ...args) => (err ? reject(err) : resolve(...args))));
-
-  await new Promise((resolve, reject) =>
-    db.run('CREATE TABLE pairs (key TEXT, value TEXT)', (err, ...args) => (err ? reject(err) : resolve(...args))));
-
-  await new Promise((resolve, reject) =>
-    db.run('create unique index idx_pair_uniq on pairs (key, value)', (err, ...args) => (err ? reject(err) : resolve(...args))));
-}
 
 /**
  * @param {string} filepath
@@ -70,25 +77,32 @@ async function handleFile(filepath) {
     terminal: false,
   });
 
+  const q = [];
   for await (const line of rl) {
     if (line !== undefined && line !== null) {
       result.lines++;
 
-      const pair = await handleLine(line);
-
-      if (pair) result.uniq_pairs++;
-      if (pair === null) result.doubles++;
+      const z = handleLine(line).then((uniq) => {
+        if (uniq) {
+          result.uniq_pairs++;
+        } else {
+          result.doubles++;
+        }
+      });
+      q.push(z);
     }
     if (result.lines % 1000000 === 0) {
       console.log(result);
       console.log(`    скрипт выполняется: ${formatDate(Date.now() - timeBegin)}`);
+      break;
     }
   }
+  await Promise.all(q);
 
   rl.close();
 
   const { n } = await new Promise((resolve, reject) =>
-    db.get('SELECT count(distinct(key)) as n FROM pairs', (err, ...args) => (err ? reject(err) : resolve(...args))));
+    db.get('select count(*) as n from (SELECT 1 FROM pairs group by key) as foo', (err, ...args) => (err ? reject(err) : resolve(...args))));
 
   result.uniq_keys = n;
 
@@ -97,26 +111,21 @@ async function handleFile(filepath) {
 
 /**
  * @param {string} line
- * @returns {Promise<{ key: string; value: string; } | null>}
+ * @returns {Promise<boolean>}
  */
 async function handleLine(line) {
   const [key, value] = line.replace(/^\s+|\s+$/g, '').split(/: /);
 
-  try {
+  const n = await new Promise((resolve, reject) => stmtPairSelect.get(
+    [key, value],
+    (err, ...args) => (err ? reject(err) : resolve(...args))
+  ));
+  if (!n) {
     await validatePair(key, value);
-    return { key, value };
-  } catch (err) {
-    if (err && err.code === 'SQLITE_CONSTRAINT') {
-      return null;
-    }
-    console.error(err);
+    return true;
   }
+  return false;
 }
-
-/**
- * @type { import('sqlite3').Statement }
- */
-let pairInsertStatement;
 
 /**
  * @param {string} key
@@ -124,11 +133,7 @@ let pairInsertStatement;
  * @returns {Promise<void>}
  */
 async function validatePair(key, value) {
-  if (!pairInsertStatement) {
-    pairInsertStatement = db.prepare('INSERT INTO pairs (key, value) values (?, ?)');
-  }
-
-  return new Promise((resolve, reject) => pairInsertStatement.run(
+  return new Promise((resolve, reject) => stmtPairInsert.run(
     [key, value],
     (err, ...args) => (err ? reject(err) : resolve(...args))
   ));

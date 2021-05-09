@@ -1,6 +1,13 @@
+const dotenv = require('dotenv');
 const oracledb = require('oracledb');
 
-const dbConfig = { user: 'db', password: 'db', connectString: 'db.home.kg:1721/pdb1.19c' };
+dotenv.config();
+
+const dbConfig = {
+  user: process.env.ORACLE_DB_USER,
+  password: process.env.ORACLE_DB_PASSWORD,
+  connectString: process.env.ORACLE_DB_CONNECT_STRING
+};
 
 (async () => {
   await run();

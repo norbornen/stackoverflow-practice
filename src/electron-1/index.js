@@ -1,19 +1,19 @@
 
 
 // @ts-check
-const {app, BrowserWindow, Menu, screen} = require('electron');
+const os = require('os');
+const { app, BrowserWindow, Menu, screen } = require('electron');
 
-
-let mainWindow
-const winURL = '/Users/kolpak/tmp/q/stat/1.html'
-let childWindow
-const childWinURL = `/Users/kolpak/tmp/q/stat/2.html`
+let mainWindow;
+const winURL = `/Users/${os.userInfo().username}/tmp/q/stat/1.html`;
+let childWindow;
+const childWinURL = `/Users/${os.userInfo().username}/tmp/q/stat/2.html`;
 console.log(winURL);
 console.log(childWinURL);
 
-async function createWindow () {
-  const display = screen.getPrimaryDisplay()
-  let area = display.workArea
+async function createWindow() {
+  const display = screen.getPrimaryDisplay();
+  const area = display.workArea;
 
   mainWindow = new BrowserWindow({
     useContentSize: false,
@@ -25,7 +25,7 @@ async function createWindow () {
       nodeIntegrationInWorker: true,
       // nodeIntegrationInSubFrames: true
     }
-  })
+  });
 
   console.log('11', winURL);
   await mainWindow.loadFile(winURL);
@@ -33,13 +33,13 @@ async function createWindow () {
   console.log(12);
 
   mainWindow.on('closed', () => {
-    mainWindow = null
-  })
+    mainWindow = null;
+  });
 }
 
-async function createChildWindow () {
-  const display = screen.getPrimaryDisplay()
-  let area = display.workArea
+async function createChildWindow() {
+  const display = screen.getPrimaryDisplay();
+  const area = display.workArea;
 
   childWindow = new BrowserWindow({
     parent: mainWindow,
@@ -53,30 +53,30 @@ async function createChildWindow () {
       nodeIntegration: true, // to access node feautures in "browser" code
       nodeIntegrationInWorker: true
     }
-  })
+  });
 
-  await childWindow.loadFile(childWinURL)
+  await childWindow.loadFile(childWinURL);
 
   childWindow.on('closed', () => {
-    childWindow = null
-  })
+    childWindow = null;
+  });
 }
 
 //  Menu.setApplicationMenu(null)
 
 app.on('ready', async () => {
-  try{
-    await createWindow()
+  try {
+    await createWindow();
     console.log('1');
-    await createChildWindow()
+    await createChildWindow();
     console.log(2);
   } catch (err) {
     console.error(err);
   }
-})
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit()
+    app.quit();
   }
-})
+});

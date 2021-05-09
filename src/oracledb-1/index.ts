@@ -1,9 +1,12 @@
-import * as OracleDB from 'OracleDB';
+import * as dotenv from 'dotenv';
+import OracleDB from 'OracleDB';
+
+dotenv.config();
 
 const dbConfig: OracleDB.ConnectionAttributes = {
-    user: 'db',
-    password: 'db',
-    connectString: 'db.home.kg:1721/pdb1.19c'
+    user: process.env.ORACLE_DB_USER,
+    password: process.env.ORACLE_DB_PASSWORD,
+    connectString: process.env.ORACLE_DB_CONNECT_STRING
 };
 
 class ConnectDAO {
