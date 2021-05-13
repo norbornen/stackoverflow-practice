@@ -759,14 +759,6 @@
   dependencies:
     "@types/express" "*"
 
-"@types/node-fetch@^2.5.10":
-  version "2.5.10"
-  resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.5.10.tgz#9b4d4a0425562f9fcea70b12cb3fcdd946ca8132"
-  integrity sha512-IpkX0AasN44hgEad0gEF/V6EgR5n69VEqPEgnmoM8GsIGro3PowbWs4tR6IhxUTyPLpOn+fiGG6nrQhcmoCuIQ==
-  dependencies:
-    "@types/node" "*"
-    form-data "^3.0.0"
-
 "@types/node@*", "@types/node@>=10.0.0", "@types/node@^15.0.2":
   version "15.0.2"
   resolved "https://registry.npmjs.org/@types/node/-/node-15.0.2.tgz"
@@ -946,6 +938,13 @@
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/@types/zen-observable/-/zen-observable-0.8.2.tgz#808c9fa7e4517274ed555fa158f2de4b4f468e71"
   integrity sha512-HrCIVMLjE1MOozVoD86622S7aunluLb2PJdPfb3nYiEtohm8mIB/vyv0Fd37AdeMFrTUQXEunw78YloMA3Qilg==
+
+"@vk-io/hear@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@vk-io/hear/-/hear-1.0.3.tgz#3268948294e7b2ff2a4106a53b59a9b6993c9ad5"
+  integrity sha512-DW7Nm3EyY/T3z1O0fE0flf5zeqMe3lm7cNmrmX6jXtVBZo0V3s9xtmynP6ubFhE8z6U1JC/rIpgPs6crSMGEyA==
+  dependencies:
+    middleware-io "^2.6.0"
 
 "@wasm-codecs/oxipng@^1.0.1":
   version "1.0.1"
@@ -3618,6 +3617,15 @@ form-data@^3.0.0:
     combined-stream "^1.0.8"
     mime-types "^2.1.12"
 
+form-data@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/form-data/-/form-data-4.0.0.tgz#93919daeaf361ee529584b9b31664dc12c9fa452"
+  integrity sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==
+  dependencies:
+    asynckit "^0.4.0"
+    combined-stream "^1.0.8"
+    mime-types "^2.1.12"
+
 form-data@~2.3.2:
   version "2.3.3"
   resolved "https://registry.npmjs.org/form-data/-/form-data-2.3.3.tgz"
@@ -4309,6 +4317,11 @@ inquirer@^7.3.3:
     string-width "^4.1.0"
     strip-ansi "^6.0.0"
     through "^2.3.6"
+
+inspectable@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/inspectable/-/inspectable-1.1.1.tgz#7a9ecc277e483b00ca9a4eadd08bf22659b23585"
+  integrity sha512-dMT0Qj7iXzWt4pjAVRkWBdq8u1Yro5BEHDwv5EdNrIcbDp1wfhrYrWu4P48eAK5VA5MmVWPtKUB/xvBQA92rXw==
 
 interpret@^2.2.0:
   version "2.2.0"
@@ -5288,6 +5301,11 @@ methods@^1.1.2, methods@~1.1.2:
   version "1.1.2"
   resolved "https://registry.npmjs.org/methods/-/methods-1.1.2.tgz"
   integrity sha1-VSmk1nZUE07cxSZmVoNbD4Ua/O4=
+
+middleware-io@^2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/middleware-io/-/middleware-io-2.6.0.tgz#bce019eabf14ad0adb8c7ec328cb57ec37b8eb84"
+  integrity sha512-o/Aa6ZtufvXGFCKurGSu7QBCud4b2OAzj7LMR6eKMFX9IuC7UqDMDszKjo1pNIelhDX4TbAQVFobRRzLD1IgDQ==
 
 mime-db@1.47.0, "mime-db@>= 1.43.0 < 2":
   version "1.47.0"
@@ -8663,6 +8681,18 @@ vizion@2.2.1:
     git-node-fs "^1.0.0"
     ini "^1.3.5"
     js-git "^0.7.8"
+
+vk-io@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/vk-io/-/vk-io-4.2.0.tgz#ff16cd94ef8f96eacf3deac95eb448137bd8bbea"
+  integrity sha512-jBoS3NhJU5qHULcd2uYKvS3sT6aYxj66F0CD7ryeHci4jMpHVzmuT8NCueJrygoJDccm3pX+DzbGY6JeVaB8FQ==
+  dependencies:
+    abort-controller "^3.0.0"
+    debug "^4.3.1"
+    form-data "^4.0.0"
+    inspectable "^1.1.1"
+    middleware-io "^2.6.0"
+    node-fetch "^2.6.1"
 
 w3c-hr-time@^1.0.2:
   version "1.0.2"
