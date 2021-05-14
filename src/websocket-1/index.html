@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello</title>
+    <script>
+      const ws = new WebSocket('ws://localhost:9030');
+      ws.onopen = function () { console.log('opened') }
+      ws.onclose = function () { console.log('close') }
+      ws.onerror = function (err) { console.log(err) }
+      ws.onmessage = function (msg) {
+        const li = document.createElement('li');
+        li.innerHTML += msg.data
+        document.getElementById('ol').prepend(li);
+      }
+    </script>
+  </head>
+  <body><h1>ru.SO</h1><ol id="ol"></ol></body>
+</html>
+
