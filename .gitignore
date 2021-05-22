@@ -74,3 +74,5 @@ src/**/*.jpg
 src/**/*.ttf
 src/**/*.db
 src/**/*.txt
+src/**/*.key
+src/**/*.crt
