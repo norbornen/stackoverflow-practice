@@ -1,8 +1,9 @@
 // @ts-check
+require('dotenv').config();
 const { Sequelize } = require('sequelize');
 
 const sequelize = new Sequelize(
-  'postgres://kolpak@localhost:5432/test',
+  `postgres://${process.env.POSTGRES_LOCAL_DBUSER}@localhost:5432/test2`,
   {
     logging: console.log
   }
