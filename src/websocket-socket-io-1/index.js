@@ -1,30 +1,31 @@
 // @ts-check
 
-var express = require('express');
-var http = require('http');
-var path = require('path');
-var socketIO = require('socket.io');
-var app = express();
-var server = new http.Server(app);
-var io = socketIO(server);
+const express = require('express');
+const http = require('http');
+const path = require('path');
+const socketIO = require('socket.io');
+
+const app = express();
+const server = new http.Server(app);
+const io = socketIO(server);
 
 app.set('port', 80);
-app.use('/static', express.static(__dirname + '/static'));
+app.use('/static', express.static(`${__dirname}/static`));
 
 // Маршруты
-app.get('/', function(request, response) {
-    response.sendFile(path.join(__dirname, 'index.html'));
+app.get('/', (request, response) => {
+  response.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Запуск сервера
-server.listen(80, function() {
-    console.log('Запускаю сервер на порте 80');
+server.listen(80, () => {
+  console.log('Запускаю сервер на порте 80');
 });
 
 // Обработчик веб-сокетов
-io.on('connection', function(socket) {
+io.on('connection', (socket) => {
 });
 
-setInterval(function() {
-    io.sockets.emit('message', 'hi!');
+setInterval(() => {
+  io.sockets.emit('message', 'hi!');
 }, 1000);

@@ -58,16 +58,7 @@ typings/
 
 # Serverless directories
 .serverless/
-
-# FuseBox cache
-.fusebox/
-
-# DynamoDB Local files
-.dynamodb/
-
-# TernJS port file
-.tern-port
-
+.idea
 src/stream-big-data-1/generator/data*
 src/**/*.png
 src/**/*.jpg
