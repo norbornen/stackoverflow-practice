@@ -4,7 +4,8 @@ const Gamedig = require('gamedig');
 Gamedig.query({
   type: 'etqw',
   host: '178.162.135.83',
-  port: 27735
+  port: 27735,
+  socketTimeout: 5000
 }).then((info) => {
   console.log(JSON.stringify(info, null, 2));
 }).catch((error) => {
