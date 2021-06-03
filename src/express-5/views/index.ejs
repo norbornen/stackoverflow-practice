@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Hello, world!</title>
+    <script type="text/javascript">
+      async function getSum() {
+        const resEl = document.getElementById('result');
+        resEl.innerHTML = '';
+        
+        try {
+          const x = +(document.getElementById('x').value) || 0;
+          const y = +(document.getElementById('y').value) || 0;
+          let res = await fetch("http://localhost:3000/api/sum", {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ x, y })
+          });
+          if (!res.ok) {
+            console.log(res);
+            throw new Error( res.statusText || res.status );
+          }
+
+          const { data } = await res.json();
+          resEl.innerHTML = data;
+        } catch (err) {
+          console.error(err);
+          alert('Произошла ошибка...');
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Hello</h1>
+    <div>
+      <label>первое число: <input id='x' type="number" value="1" required /></label>
+      <label>второе число: <input id='y' type="number" value="2" required /></label>
+      <br />
+      <button onclick="getSum()">сложить</button>
+    </div>
+    <div style="margin-top: 1em">Результат: <span id="result"></span></div>
+  </body>
+</html>
