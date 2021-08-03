@@ -1,0 +1,69 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link href="http://localhost:3000/public/css/style.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <title>Business Cards</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+      <span class="navbar-brand mb-0 h1">Business Cards</span>
+    </div>
+  </nav>
+
+  <div class="card-group justify-content-center">
+    <div id="cards" class="row">
+      <!-- <div class="col col--hidden"> -->
+        <% cards.forEach((card, idx) => { %>
+          <% if (idx % 3 === 0) { %>
+            <div class="w-100"></div>
+          <% } %>
+          <div class="card col">
+            <img
+              src="<%- card.avatar %>"
+              class="card-img-top"
+              width="200"
+              height="200"
+              alt="<%= `${card.first_name} ${card.last_name}` %>"
+            >
+            <div class="card-body">
+              <h5 class="card-title"><%= card.first_name %> <%= card.last_name %></h5>
+              <p class="card-text"><%= card.email %></p>
+            </div>
+          </div>
+        <% }) %>
+      <!-- </div> -->
+
+    </div>
+  </div>
+  <a href="#" id="loadMore" class="loadMore"> Load More </a>
+
+  <footer>
+    <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
+      © Vovse Ne Nimchenko Anastasiya 2021
+    </div>
+  </footer>
+
+  <script>
+    $(document).ready(function () {
+      $(function () {
+        $("#loadMore").on('click', function (e) {
+          e.preventDefault();
+          $(".col--hidden").slice(0, 3).slideDown().removeClass('col--hidden');
+
+          $(this).toggle();
+        })
+      })
+    });
+  </script>
+
+</body>
+
+</html>

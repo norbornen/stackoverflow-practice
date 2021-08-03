@@ -1,0 +1,49 @@
+html {
+  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* .col--hidden {
+  display: none;
+  margin: 5px 5px 5px 5px;
+}
+.row {
+  margin-left: auto;
+  margin-right: auto;
+  align-items: center;
+}
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  width: 250px;
+  height: 300px;
+}
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.card-group {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+.col {
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+#img {
+  border-radius: 5px 5px 0 0;
+} */
+
+.loadMore {
+  margin-top: 40px;
+  margin-bottom: 40px;
+  width: 500px;
+  border: 1px solid gray;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+}
