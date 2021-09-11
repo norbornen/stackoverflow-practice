@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<header>
+</header>
+
+<body>
+  <input id="password" placeholder="password">
+  <input id="username" placeholder="username">
+  <button id="testButton">click on me</button>
+  <script type="text/javascript">
+    document.getElementById("testButton").addEventListener("click", async function () {
+      const password = document.getElementById("password").value;
+      const username = document.getElementById("username").value;
+      const response = await fetch("/api/test", {
+        method: "POST",
+        headers: {
+          "Accept": "applications/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password
+        })
+      });
+      if (response.ok === true) {
+        const answer = await response.json();
+        console.log(answer);
+      }
+    })
+  </script>
+</body>
+
+</html>
