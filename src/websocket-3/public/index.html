@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello</title>
+    <script>
+      const ws = new WebSocket('ws://localhost:3000');
+      ws.onerror = (err) => console.log(err);
+      ws.onclose = () => console.log('ws::close');
+      ws.onmessage = (msg) => {
+        document.getElementById('console').innerHTML += msg.data;
+      }
+
+      function handleForm(ev, f) {
+        ev.preventDefault();
+        document.getElementById('console').innerHTML = '';
+
+        const { cmd, ...payload } = Array.from(new FormData(f)).reduce(
+          (acc, [key, value]) => {
+            if (value !== null && value !== undefined && value !== '') {
+              acc[key] = value;
+            }
+            return acc;
+          },
+          {}
+        );
+
+        ws.send(
+          JSON.stringify({ cmd, payload })
+        );
+      }
+    </script>
+    <style>
+      pre {
+        border: 1px solid grey;
+        border-radius: 4px;
+        background-color: #eeeeee;
+        padding: 1em;
+        font-size: 8pt;
+        width: 80%;
+      }
+    </style>
+  </head>
+  <body>
+    <form name="cmd" onsubmit="handleForm(event, this)">
+      <select name="cmd">
+        <option value="find">find</option>
+        <option value="cal">calendar</option>
+        <option value="tail">tail</option>
+      </select>
+      <input name="name" />
+      <button>send</button>
+    </form>
+    <pre id="console"></pre>
+  </body>
+</html>
+
