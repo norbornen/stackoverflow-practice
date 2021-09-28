@@ -58,6 +58,7 @@
     "node-fetch": "^2.6.1",
     "node-gd": "^2.1.1",
     "node-libcurl": "^2.3.3",
+    "node-robokassa": "^0.0.0",
     "node-telegram-bot-api": "^0.51.0",
     "nodemailer": "^6.4.18",
     "oracledb": "^5.1.0",
